@@ -9,44 +9,6 @@ tri_jx <- function(x) {
   c(1L, 2L, 3L) + offset
 }
 
-assoc_triangle <- function(x) {
-  sq <- seq_len(nrow(x))
-  cbind(sq[-(length(sq) + -1:0)], sq[-c(1, 2)], sq[-c(1, length(sq))])
-}
-
-#' Simplify a path
-#'
-#' @param x
-#'
-#' @param keep_pc
-#'
-#' @name simplify_line
-#' @export
-simplify_path <- function(x, keep_pc) {
-  len <- nrow(x)
-
-  cnt <- 0
-  tri <- assoc_triangle(x)
-  bad <- rep(FALSE, len)
-  while(nrow(tri) > 5 &&(nrow(tri) + 2) > (len * keep_pc)) {
-  cnt <- cnt + 1
-  #print(cnt)
-   a <- c(Inf, tri_area(x[t(tri), ]), Inf)
-   bb <- cbind(rbind(NA, tri, NA), a)
-   amin <- which.min(a)
-   tri <- bb[c(-1, -amin, -nrow(bb)),1:3]
-   #a <- a[-amin]
-   idx <- c(-1, 0, 1) + amin
-   if (any(idx > nrow(tri))) {
-     idx <- idx[idx <= nrow(tri)]
-   }
-   if (length(idx) > 0) {
-     a[idx] <- tri_area(x[t(tri[idx - 1, ]), ])
-   }
-   bad[amin] <- TRUE
-  }
-  x[!bad, ]
-}
 #' Area of triangles
 #'
 #' Input is x,y matrix in triplets
