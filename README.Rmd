@@ -19,6 +19,15 @@ knitr::opts_chunk$set(
 The goal of simpler is to provide the [Visvalingam algorithm](https://bost.ocks.org/mike/simplify/) to 
 simplifying paths. 
 
+Very much WIP!
+
+TODO: 
+
+* distinguish shared boundaries from isolate lines, and drop short one
+* provide methods for various formats, especially polygons to shared boundaries
+* avoid recalculating every triangle area every iteration
+* methods to recompose shared paths as polygons
+
 ## Installation
 
 Only from github
@@ -27,10 +36,29 @@ Only from github
 
 ## Example
 
+The USA example, from Natural Earth, the slowness here is a good motivation to speed up the point cull. 
+
+```{r usa}
+library(simpler)
+w <- rnaturalearth::ne_countries(scale = 10, country = "United States of America", returnclass = "sf")
+x <- w$geometry[[1]][[1]][[1]]
+
+
+op <- par(mfrow = c(3, 3), mar = rep(0, 4))
+plot(x, type = "l", axes = FALSE)
+for (kpc in c(0.4, rep(0.9, 7))) {
+  x <- simplify_path(x, keep_pc = 0.3)
+  plot(x, type = "l", axes = FALSE)
+}
+
+par(op)
+
+```
+
 Simplify a bunch of shared lines between polygons. 
 
 ```{r example}
-library(simpler)
+
 library(silicate)
 x <- ARC(inlandwaters)
 
