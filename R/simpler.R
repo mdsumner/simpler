@@ -19,6 +19,7 @@ assoc_triangle <- function(x) {
 #' simplify_path(x, keep_pc = 0.1)
 simplify_path <- function(x, keep_pc = 0.1, ..., verbose = FALSE) {
   len <- nrow(x)
+  if (len < 4L) return(x)
 
   cnt <- 0
   tri <- assoc_triangle(x)
@@ -26,7 +27,7 @@ simplify_path <- function(x, keep_pc = 0.1, ..., verbose = FALSE) {
   a <- c(Inf, tri_area(x[t(tri), ]), Inf)
 
   residue <- 1 - keep_pc
-
+  ## shortcut for short arcs
   while(nrow(tri) > 5 &&(nrow(tri) + 2) > (len * keep_pc)) {
     cnt <- cnt + 1
     a <- c(Inf, tri_area(x[t(tri), ]), Inf)
