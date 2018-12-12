@@ -46,9 +46,12 @@ x <- w$geometry[[1]][[1]][[1]]
 
 op <- par(mfrow = c(3, 3), mar = rep(0, 4))
 plot(x, type = "l", axes = FALSE)
-for (kpc in c(0.4, rep(0.9, 7))) {
-  x <- simplify_path(x, keep_pc = 0.3)
+text(-100, 40, sprintf("vertices: %i",  nrow(x)))
+for (kpc in c(0.4, rep(0.6, 7))) {
+  x <- simplify_path(x, keep_pc = kpc)
   plot(x, type = "l", axes = FALSE)
+  text(-100, 40, sprintf("vertices: %i",  nrow(x)))
+
 }
 
 par(op)
@@ -71,7 +74,7 @@ sfx <- vector("list", nrow(x$object_link_arc))
 plot(x$vertex$x_, x$vertex$y_, pch = ".", asp = 1, xlim = c(4e5, 2e6), ylim = c(-1e6, 0))
 for (i in seq_along(x$object_link_arc$arc_)) {
  pts <- get_pts(x, i)
- path <- simplify_path(pts, keep_pc = 0.01)
+ path <- simplify_path(pts, keep_pc = 0.001)
  lines(path, col = rainbow(10)[i %% 10 + 1], lwd = 3)
  sfx[[i]] <- sf::st_linestring(path)
 }

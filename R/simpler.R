@@ -17,7 +17,7 @@ assoc_triangle <- function(x) {
 #' x <- cbind(1:10, sort(rnorm(10)))
 #' keep_pc <- 0.1
 #' simplify_path(x, keep_pc = 0.1)
-simplify_path <- function(x, keep_pc = 0.1) {
+simplify_path <- function(x, keep_pc = 0.1, ..., verbose = FALSE) {
   len <- nrow(x)
 
   cnt <- 0
@@ -31,9 +31,9 @@ simplify_path <- function(x, keep_pc = 0.1) {
     cnt <- cnt + 1
     a <- c(Inf, tri_area(x[t(tri), ]), Inf)
 
-    print(cnt)
+   if (verbose) print(cnt)
     bb <- cbind(rbind(NA, tri, NA), a)
-    amin <- which(a < quantile(a, residue/2))
+    amin <- which(a < quantile(a, residue/5))
     tri <- bb[c(-1, -amin, -nrow(bb)),1:3]
     a <- a[-amin]
     bad[amin] <- TRUE
