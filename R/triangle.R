@@ -25,16 +25,27 @@ assoc_triangle <- function(x) {
 simplify_path <- function(x, keep_pc) {
   len <- nrow(x)
 
-  ## this while look is inefficient because it recalculates area for all
-  ## triangles every time, but we only need a[-which.min(a)] removed and
-  ## its neighbours updated
-  while((nrow(x) - 3) > (len * keep_pc)) {
-    ## implicit first and last row for points we won't throw away
-    tri <- assoc_triangle(x)
-    a <- c(Inf, tri_area(x[t(tri), ]), Inf)
-    x <- x[-which.min(a), ]
+  cnt <- 0
+  tri <- assoc_triangle(x)
+  bad <- rep(FALSE, len)
+  while(nrow(tri) > 5 &&(nrow(tri) + 2) > (len * keep_pc)) {
+  cnt <- cnt + 1
+  #print(cnt)
+   a <- c(Inf, tri_area(x[t(tri), ]), Inf)
+   bb <- cbind(rbind(NA, tri, NA), a)
+   amin <- which.min(a)
+   tri <- bb[c(-1, -amin, -nrow(bb)),1:3]
+   #a <- a[-amin]
+   idx <- c(-1, 0, 1) + amin
+   if (any(idx > nrow(tri))) {
+     idx <- idx[idx <= nrow(tri)]
+   }
+   if (length(idx) > 0) {
+     a[idx] <- tri_area(x[t(tri[idx - 1, ]), ])
+   }
+   bad[amin] <- TRUE
   }
-  x
+  x[!bad, ]
 }
 #' Area of triangles
 #'
